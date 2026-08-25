@@ -1,26 +1,148 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ── Lumience Color Palette ── */
+  --color-deep-navy: #001b44;
+  --color-midnight-navy: #06152f;
+  --color-lumience-blue: #087cf5;
+  --color-bright-blue: #168cff;
+  --color-light-blue: #ddf1ff;
+  --color-lumience-purple: #7438d4;
+  --color-light-purple: #f0e6ff;
+  --color-off-white: #f8fafd;
+  --color-dark-text: #0a2347;
+  --color-soft-gray: #6b7a90;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ── Lenis smooth scroll ── */
+html.lenis,
+html.lenis body {
+  height: auto;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* ── Base resets ── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-deep-navy);
+  color: var(--color-off-white);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Scrollbar styling ── */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-midnight-navy);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    var(--color-lumience-blue),
+    var(--color-lumience-purple)
+  );
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-bright-blue);
+}
+
+/* ── Premium Glassmorphism & Custom Utilities ── */
+@layer utilities {
+  /* Tekstur noise/grain tipis untuk background yang lebih mahal */
+  .bg-noise {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+  }
+
+  /* TRUE Glassmorphism dengan inset reflection (pantulan cahaya di pinggir kaca) */
+  .glass {
+    @apply bg-white/[0.03] backdrop-blur-2xl border border-white/[0.08];
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15), 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  .glass-blue {
+    @apply bg-gradient-to-br from-[#087CF5]/10 to-transparent backdrop-blur-2xl border border-white/[0.08];
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2), 0 8px 32px rgba(8, 124, 245, 0.15);
+  }
+
+  .glass-purple {
+    @apply bg-gradient-to-br from-[#7438D4]/10 to-transparent backdrop-blur-2xl border border-white/[0.08];
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2), 0 8px 32px rgba(116, 56, 212, 0.15);
+  }
+
+  .glass-card {
+    @apply bg-white/[0.04] backdrop-blur-3xl border border-white/[0.08] rounded-3xl;
+  }
+
+  /* Gradasi Teks */
+  .gradient-text-premium {
+    @apply bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/30;
+  }
+
+  .gradient-text-blue {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-lumience-blue to-bright-blue;
+  }
+
+  .gradient-text-purple {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-lumience-blue to-lumience-purple;
+  }
+
+  /* Garis Pemisah Antar Section */
+  .section-divider {
+    @apply h-px w-full opacity-40;
+    background: linear-gradient(90deg, transparent, var(--color-lumience-blue), var(--color-lumience-purple), transparent);
+  }
+
+  /* Sembunyikan scrollbar untuk elemen slider horizontal di mobile (Section Layanan) */
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ── Keyframes & Animations ── */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.02); }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 4s ease-in-out infinite;
+}
+
+/* ── Selection ── */
+::selection {
+  background-color: var(--color-bright-blue);
+  color: white;
 }
