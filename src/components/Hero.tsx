@@ -19,11 +19,47 @@ export default function Hero() {
   const grid3dRef = useRef<HTMLDivElement>(null);
   const gridFloorRef = useRef<HTMLDivElement>(null);
 
+  // ── HOVER INTERACTION FOR INDIVIDUAL LETTERS ──
+  const handleCharHover = (e: React.MouseEvent<HTMLSpanElement>) => {
+    const target = e.currentTarget;
+
+    // Randomize offset & tilt for dynamic organic floating
+    const randomY = gsap.utils.random(-25, -40);
+    const randomRot = gsap.utils.random(-15, 15);
+    const randomZ = gsap.utils.random(20, 40);
+
+    // Floating UP with 3D rotate + glow
+    gsap.to(target, {
+      y: randomY,
+      z: randomZ,
+      rotationZ: randomRot,
+      scale: 1.3,
+      color: "#168cff",
+      textShadow: "0 0 25px rgba(22, 140, 255, 0.9), 0 0 50px rgba(22, 140, 255, 0.5)",
+      duration: 0.2,
+      ease: "power2.out",
+      overwrite: "auto",
+      onComplete: () => {
+        // Elastic bounce back to original position
+        gsap.to(target, {
+          y: 0,
+          z: 0,
+          rotationZ: 0,
+          scale: 1,
+          color: "inherit",
+          textShadow: "0 0 0px transparent",
+          duration: 1,
+          ease: "elastic.out(1.2, 0.3)",
+        });
+      },
+    });
+  };
+
   useEffect(() => {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ delay: 0.2 });
-      const words = titleRef.current
-        ? titleRef.current.querySelectorAll(".word")
+      const chars = titleRef.current
+        ? titleRef.current.querySelectorAll(".char")
         : [];
 
       // Grid entrance
@@ -44,16 +80,18 @@ export default function Hero() {
         { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }
       );
 
-      if (words.length > 0) {
+      // Letter cascade entrance
+      if (chars.length > 0) {
         tl.fromTo(
-          words,
-          { opacity: 0, y: 70, rotationX: -24 },
+          chars,
+          { opacity: 0, y: 60, rotationX: -50, z: -50 },
           {
             opacity: 1,
             y: 0,
             rotationX: 0,
-            duration: 1.1,
-            stagger: 0.08,
+            z: 0,
+            duration: 0.8,
+            stagger: 0.02,
             ease: "power4.out",
           },
           "-=0.35"
@@ -64,7 +102,7 @@ export default function Hero() {
         descRef.current,
         { opacity: 0, y: 24 },
         { opacity: 1, y: 0, duration: 0.75 },
-        "-=0.7"
+        "-=0.6"
       )
         .fromTo(
           ctaRef.current,
@@ -91,6 +129,7 @@ export default function Hero() {
           "-=0.7"
         );
 
+      // Slow idle loop for cards
       gsap.to(floatITRef.current, {
         y: -10,
         duration: 3.2,
@@ -123,7 +162,7 @@ export default function Hero() {
         delay: 0.6,
       });
 
-      // Slow drifting perspective on floor grid
+      // Floor grid animation
       gsap.to(gridFloorRef.current, {
         backgroundPosition: "0px 80px",
         duration: 12,
@@ -135,6 +174,7 @@ export default function Hero() {
     return () => ctx.revert();
   }, []);
 
+  // Mouse parallax for overall scene
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (window.innerWidth < 1024) return;
@@ -173,7 +213,6 @@ export default function Hero() {
         ease: "power2.out",
       });
 
-      // 3D tilt on wall grid + floor
       gsap.to(grid3dRef.current, {
         rotateY: x * 3,
         rotateX: y * -2,
@@ -192,8 +231,27 @@ export default function Hero() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  const titleLine1 = "Where Ideas".split(" ");
-  const titleLine2 = "Take Shape,".split(" ");
+  // Helper function to render text into interactive floatable characters
+  const renderInteractiveText = (text: string, customClass: string = "") => {
+    const words = text.split(" ");
+    return words.map((word, wIdx) => (
+      <span key={wIdx} className="inline-block whitespace-nowrap mr-3 sm:mr-5">
+        {word.split("").map((char, cIdx) => (
+          <span
+            key={cIdx}
+            onMouseEnter={handleCharHover}
+            className={`char inline-block cursor-pointer select-none transition-colors duration-150 ${customClass}`}
+            style={{
+              willChange: "transform, color, text-shadow",
+              transformStyle: "preserve-3d",
+            }}
+          >
+            {char}
+          </span>
+        ))}
+      </span>
+    ));
+  };
 
   return (
     <section
@@ -202,15 +260,12 @@ export default function Hero() {
       className="relative min-h-screen w-full overflow-hidden bg-deep-navy bg-noise flex flex-col items-center justify-center pt-24 pb-16 sm:pt-28 sm:pb-20"
       style={{ perspective: "1200px" }}
     >
-      {/* ═══════════════════════════════════════════
-          3D GRID SYSTEM
-      ═══════════════════════════════════════════ */}
+      {/* ── 3D GRID SYSTEM ── */}
       <div
         className="absolute inset-0 pointer-events-none overflow-hidden"
         aria-hidden="true"
         style={{ perspective: "1000px", transformStyle: "preserve-3d" }}
       >
-        {/* Layer 1 — WALL GRID (facing camera, slight depth) */}
         <div
           ref={grid3dRef}
           className="absolute inset-[-10%] origin-center"
@@ -219,7 +274,6 @@ export default function Hero() {
             transform: "translateZ(-80px)",
           }}
         >
-          {/* Main luminous grid */}
           <div
             className="absolute inset-0"
             style={{
@@ -234,8 +288,6 @@ export default function Hero() {
                 "radial-gradient(ellipse 80% 75% at 50% 42%, black 15%, transparent 72%)",
             }}
           />
-
-          {/* Secondary finer grid (depth layer) */}
           <div
             className="absolute inset-0 opacity-50"
             style={{
@@ -251,16 +303,13 @@ export default function Hero() {
             }}
           />
 
-          {/* Strong accent columns */}
           <div className="absolute inset-y-0 left-[15%] w-px bg-gradient-to-b from-transparent via-bright-blue/50 to-transparent shadow-[0_0_12px_rgba(22,140,255,0.5)]" />
           <div className="absolute inset-y-0 right-[15%] w-px bg-gradient-to-b from-transparent via-lumience-purple/45 to-transparent shadow-[0_0_12px_rgba(116,56,212,0.45)]" />
           <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-px bg-gradient-to-b from-transparent via-white/25 to-transparent" />
 
-          {/* Strong accent rows */}
           <div className="absolute inset-x-0 top-[30%] h-px bg-gradient-to-r from-transparent via-bright-blue/40 to-transparent shadow-[0_0_10px_rgba(22,140,255,0.35)]" />
           <div className="absolute inset-x-0 bottom-[32%] h-px bg-gradient-to-r from-transparent via-lumience-purple/35 to-transparent shadow-[0_0_10px_rgba(116,56,212,0.3)]" />
 
-          {/* Glowing intersection nodes */}
           {[
             { t: "30%", l: "15%" },
             { t: "30%", l: "50%" },
@@ -288,7 +337,7 @@ export default function Hero() {
           ))}
         </div>
 
-        {/* Layer 2 — FLOOR GRID (perspective 3D plane) */}
+        {/* 3D FLOOR GRID */}
         <div
           className="absolute left-[-20%] right-[-20%] bottom-[-5%] h-[55%] origin-bottom"
           style={{
@@ -314,7 +363,6 @@ export default function Hero() {
               boxShadow: "0 0 60px rgba(8, 124, 245, 0.08)",
             }}
           />
-          {/* Horizon glow line */}
           <div
             className="absolute left-[10%] right-[10%] top-[8%] h-px"
             style={{
@@ -325,11 +373,10 @@ export default function Hero() {
           />
         </div>
 
-        {/* Edge vignette so grid doesn't fight content */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,27,68,0.55)_70%,rgba(0,27,68,0.92)_100%)]" />
       </div>
 
-      {/* ── Ambient light ── */}
+      {/* ── Ambient Light ── */}
       <div
         ref={glowWrapperRef}
         className="absolute inset-0 pointer-events-none flex items-center justify-center"
@@ -344,7 +391,7 @@ export default function Hero() {
         />
       </div>
 
-      {/* ── CENTER CONTENT ── */}
+      {/* ── CENTER CONTENT WITH INTERACTIVE LETTERS ── */}
       <div className="relative z-20 max-w-5xl mx-auto px-4 sm:px-6 flex flex-col items-center text-center">
         <div
           ref={badgeRef}
@@ -356,43 +403,34 @@ export default function Hero() {
           </span>
         </div>
 
+        {/* ── INTERACTIVE HEADLINE ── */}
         <h1
           ref={titleRef}
-          className="font-display font-extrabold tracking-tighter leading-[1.05] sm:leading-[0.95] mb-6"
-          style={{ perspective: "1000px" }}
+          className="font-display font-extrabold tracking-tighter leading-[1.05] sm:leading-[0.95] mb-6 py-2"
+          style={{ perspective: "1000px", transformStyle: "preserve-3d" }}
         >
-          <span className="block text-[2.7rem] sm:text-6xl md:text-7xl lg:text-[5.8rem] text-white">
-            {titleLine1.map((word, i) => (
-              <span
-                key={`l1-${i}`}
-                className="word inline-block mr-3 sm:mr-5 drop-shadow-2xl"
-                style={{ transformStyle: "preserve-3d" }}
-              >
-                {word}
-              </span>
-            ))}
+          {/* Line 1 */}
+          <span className="block text-[2.7rem] sm:text-6xl md:text-7xl lg:text-[5.8rem]">
+            {renderInteractiveText("Where Ideas", "text-white")}
           </span>
-          <span className="block text-[3rem] sm:text-6xl md:text-7xl lg:text-[6.2rem] text-white mt-1 sm:mt-0">
-            {titleLine2.map((word, i) => (
-              <span
-                key={`l2-${i}`}
-                className="word inline-block mr-3 sm:mr-5 drop-shadow-2xl"
-                style={{ transformStyle: "preserve-3d" }}
-              >
-                {word}
-              </span>
-            ))}
+
+          {/* Line 2 */}
+          <span className="block text-[3rem] sm:text-6xl md:text-7xl lg:text-[6.2rem] mt-1 sm:mt-0">
+            {renderInteractiveText("Take Shape,", "text-white")}
           </span>
+
+          {/* Line 3 */}
           <span className="block text-[2.4rem] sm:text-5xl md:text-6xl lg:text-[5rem] mt-2 sm:mt-3">
-            <span className="word inline-block font-light italic text-white/55 mr-3 sm:mr-5">
-              Digitally
+            {renderInteractiveText("Digitally", "font-light italic text-white/55")}
+            <span className="inline-block whitespace-nowrap mr-3 sm:mr-5">
+              <span
+                onMouseEnter={handleCharHover}
+                className="char inline-block cursor-pointer font-body font-light text-white/25 select-none"
+              >
+                &amp;
+              </span>
             </span>
-            <span className="word inline-block font-body font-light text-white/25 mr-3 sm:mr-5">
-              &amp;
-            </span>
-            <span className="word inline-block gradient-text-premium pb-1">
-              Visually.
-            </span>
+            {renderInteractiveText("Visually.", "gradient-text-premium pb-1")}
           </span>
         </h1>
 
@@ -438,7 +476,6 @@ export default function Hero() {
       </div>
 
       {/* ── FLOATING CARDS ── */}
-
       <div
         ref={floatQuoteRef}
         className="hidden lg:flex absolute bottom-[12%] left-[4%] xl:left-[7%] z-30"
