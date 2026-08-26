@@ -3,6 +3,13 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsapConfig";
 
+// =========================================================================
+// CONFIG LOGO:
+// Simpan file logo di folder public/ (contoh: public/logo.png)
+// Ubah path di bawah jika nama/format file berbeda
+// =========================================================================
+const LOGO_SRC = "/team/logo.png";
+
 const NAV_LINKS = [
   { label: "Home", href: "#home" },
   { label: "Layanan", href: "#layanan" },
@@ -67,7 +74,7 @@ export default function Footer() {
       className="relative w-full bg-midnight-navy text-white overflow-hidden"
     >
       {/* Top gradient line */}
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-lumience-blue to-lumience-purple to-transparent opacity-60" />
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-lumience-blue to-lumience-purple opacity-60" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
         {/* 4 columns */}
@@ -79,17 +86,34 @@ export default function Footer() {
             }}
             className="sm:col-span-2 lg:col-span-1"
           >
-            <a href="#home" className="inline-flex items-center gap-2.5 mb-4 group">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-lumience-blue to-bright-blue flex items-center justify-center shadow-glow-blue-sm">
-                <span className="font-display text-sm font-extrabold text-white">
-                  LM
-                </span>
+            <a
+              href="#home"
+              className="inline-flex items-center gap-3 mb-4 group"
+            >
+              {/* Logo image only — rounded, no blue box */}
+              <div className="relative w-12 h-12 rounded-full overflow-hidden bg-transparent flex-shrink-0 transition-transform duration-300 group-hover:scale-105">
+                {LOGO_SRC ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={LOGO_SRC}
+                    alt="Lumience Logo"
+                    className="w-full h-full object-contain rounded-full"
+                  />
+                ) : (
+                  <div className="w-full h-full rounded-full bg-white/10 flex items-center justify-center">
+                    <span className="font-display text-sm font-extrabold text-white">
+                      LM
+                    </span>
+                  </div>
+                )}
               </div>
+
               <span className="font-display text-xl font-bold tracking-wide">
                 <span className="gradient-text-blue">LUMI</span>
                 <span className="text-white">ENCE</span>
               </span>
             </a>
+
             <p className="font-body text-sm text-white/45 font-light leading-relaxed max-w-xs">
               Where Ideas Take Shape, Digitally &amp; Visually.
             </p>
@@ -173,7 +197,11 @@ export default function Footer() {
                   aria-label={s.name}
                   className="w-10 h-10 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center text-white/50 hover:text-white hover:border-bright-blue/40 hover:bg-lumience-blue/20 hover:scale-110 hover:-translate-y-0.5 transition-all duration-300"
                 >
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    className="w-4 h-4"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path d={s.path} />
                   </svg>
                 </a>
