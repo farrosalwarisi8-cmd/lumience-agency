@@ -3,6 +3,13 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { gsap } from "@/lib/gsapConfig";
 
+// =========================================================================
+// CONFIG LOGO:
+// Simpan file logo Anda di folder public/ (contoh: public/logo.png)
+// Ubah nama file di bawah jika formatnya beda (misal: "/logo.jpeg" atau "/logo.svg")
+// =========================================================================
+const LOGO_SRC = "/team/logo.png";
+
 const NAV_LINKS = [
   { label: "Home", href: "#home" },
   { label: "Layanan", href: "#layanan" },
@@ -135,7 +142,7 @@ export default function Navbar() {
       : "bg-deep-navy/90 backdrop-blur-xl border-b border-white/[0.08]"
     : "bg-transparent";
 
-  // Mobile menu: solid light or dark so text always readable
+  // Mobile menu colors
   const mobileMenuBg = isOnLight
     ? "bg-white"
     : "bg-deep-navy";
@@ -156,15 +163,29 @@ export default function Navbar() {
         style={{ opacity: 0 }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 sm:h-20">
-            {/* Logo */}
-            <a href="#home" className="flex items-center gap-2 group z-10" onClick={close}>
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-br from-lumience-blue to-bright-blue shadow-glow-blue-sm flex items-center justify-center">
-                <span className="font-display text-sm sm:text-base font-extrabold text-white">
-                  LM
-                </span>
+          <div className="flex items-center justify-between h-16 sm:h-20 lg:h-24">
+            
+            {/* ── LOGO AREA ── */}
+            <a href="#home" className="flex items-center gap-2.5 sm:gap-3 group z-10" onClick={close}>
+              {/* Image only — no blue box, rounded, scalable */}
+              <div className="relative w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full overflow-hidden bg-transparent flex-shrink-0 transition-transform duration-300 group-hover:scale-105">
+                {LOGO_SRC ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={LOGO_SRC}
+                    alt="Lumience Logo"
+                    className="w-full h-full object-contain rounded-full"
+                  />
+                ) : (
+                  // Fallback kalau gambar belum ada
+                  <div className="w-full h-full bg-gradient-to-br from-lumience-blue to-bright-blue flex items-center justify-center rounded-full">
+                    <span className="font-display text-sm sm:text-base font-extrabold text-white">LM</span>
+                  </div>
+                )}
               </div>
-              <span className="font-display text-lg sm:text-xl font-bold tracking-wide">
+
+              {/* Wordmark */}
+              <span className="font-display text-lg sm:text-xl lg:text-2xl font-bold tracking-wide">
                 <span className="gradient-text-blue">LUMI</span>
                 <span className={`transition-colors duration-500 ${logoText}`}>
                   ENCE
@@ -234,7 +255,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile Menu — solid bg, readable text */}
+      {/* Mobile Menu */}
       <div
         ref={menuRef}
         className={`fixed inset-0 z-40 lg:hidden flex flex-col items-center justify-center transition-colors duration-300 ${mobileMenuBg}`}

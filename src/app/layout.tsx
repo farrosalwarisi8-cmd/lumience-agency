@@ -35,10 +35,30 @@ export const metadata: Metadata = {
     "Bekasi",
   ],
   authors: [{ name: "Lumience" }],
+
+  // ── LOGO UNTUK FAVICON TAB BROWSER & HASIL PENCARIAN GOOGLE ──
+  icons: {
+    icon: [
+      { url: "/team/logo.png", type: "image/png" },
+    ],
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
+
+  // ── PREVIEW LOGO SAAT LINK DI-SHARE KE WHATSAPP / MEDIA SOSIAL ──
   openGraph: {
     title: "Lumience — Where Ideas Take Shape, Digitally & Visually",
     description:
       "Agensi IT Solutions dan Multimedia Solutions. Coba Dulu, Percaya Kemudian.",
+    siteName: "Lumience",
+    images: [
+      {
+        url: "/team/logo.png",
+        width: 1200,
+        height: 630,
+        alt: "Lumience Logo",
+      },
+    ],
     type: "website",
     locale: "id_ID",
   },

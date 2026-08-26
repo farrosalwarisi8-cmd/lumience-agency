@@ -210,19 +210,30 @@ export default function TeamSection() {
                 {/* Gradient fade into card body */}
                 <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#07162e] via-[#07162e]/70 to-transparent pointer-events-none" />
 
-                {/* Division tag on photo */}
+                {/* Division tag on photo — High Contrast Dark Glass Badge */}
                 <div className="absolute top-4 left-4 z-10">
                   <span
-                    className={`inline-flex px-3 py-1 rounded-full text-[10px] font-display font-bold tracking-[0.18em] uppercase backdrop-blur-md border ${
+                    className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-display font-bold tracking-[0.18em] uppercase backdrop-blur-md shadow-lg border ${
                       member.division === "IT"
-                        ? "bg-lumience-blue/20 text-bright-blue border-lumience-blue/30"
+                        ? "bg-slate-950/80 text-cyan-300 border-cyan-400/40"
                         : member.division === "Multimedia"
-                        ? "bg-lumience-purple/20 text-[#d8b4fe] border-lumience-purple/30"
+                        ? "bg-slate-950/80 text-purple-300 border-purple-400/40"
                         : member.division === "Marketing"
-                        ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
-                        : "bg-white/10 text-white border-white/20"
+                        ? "bg-slate-950/80 text-emerald-300 border-emerald-400/40"
+                        : "bg-slate-950/80 text-amber-300 border-amber-400/40"
                     }`}
                   >
+                    <span
+                      className={`w-1.5 h-1.5 rounded-full ${
+                        member.division === "IT"
+                          ? "bg-cyan-400"
+                          : member.division === "Multimedia"
+                          ? "bg-purple-400"
+                          : member.division === "Marketing"
+                          ? "bg-emerald-400"
+                          : "bg-amber-400"
+                      }`}
+                    />
                     {member.division}
                   </span>
                 </div>
@@ -240,12 +251,12 @@ export default function TeamSection() {
                   <p
                     className={`font-body text-sm font-medium ${
                       member.division === "IT"
-                        ? "text-bright-blue/90"
+                        ? "text-cyan-400"
                         : member.division === "Multimedia"
-                        ? "text-[#c084fc]"
+                        ? "text-purple-300"
                         : member.division === "Marketing"
                         ? "text-emerald-400"
-                        : "text-white/55"
+                        : "text-amber-300"
                     }`}
                   >
                     {member.role}
