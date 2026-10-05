@@ -72,7 +72,7 @@ const TEAM: TeamMember[] = [
     division: "Multimedia",
     bio: "Fokus branding, poster, packaging, dan materi promosi visual.",
     initials: "AA",
-    photo: "/team/arip.jpeg",
+    photo: "/team/ariep.jpeg",
     accent: "from-[#251040] via-[#7438d4] to-[#12081f]",
   },
 ];
